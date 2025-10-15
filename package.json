@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "break_eternity.js": "github:Patashu/break_eternity.js",
+    "eternal_notations": "github:MathCookie17/Eternal-Notations"
+  }
+}
