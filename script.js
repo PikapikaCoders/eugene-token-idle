@@ -12,6 +12,11 @@ const player = {
     }
 }
 
+function getOut() {
+    addClass("getOutDiv", "hide");
+    removeClass("mainDiv", "hide");
+}
+
 function scam() {
     if (!player.scamming) { return; }
     let gain = Decimal.pow(1.4, player.ups.yield);

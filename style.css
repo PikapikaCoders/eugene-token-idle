@@ -1,6 +1,16 @@
 body {
     font-family: "Verdana"
 }
+
+h1 {
+    font-size: 32px;
+    font-weight: bold;
+}
+
+button {
+    transition: background-color 0.2s ease;
+}
+
 .card {
     margin: 1rem;
     padding: 1.5rem;
@@ -15,7 +25,8 @@ body {
     width: 280px;
     background-color: greenyellow;
 }
-.buttonfirstkindiguess {
+
+.getOutButton {
     width: 90px;
     height: 30px;
     font-size: 14px;
@@ -24,19 +35,13 @@ body {
     background-color: yellowgreen;
     margin-top: 10px;
 }
-h1 {
- font-size: 32px;
- font-weight: bold;
-}
-.buttonfirstkindiguess:hover {
-    width: 90px;
-    height: 30px;
-    font-size: 14px;
-    border-radius: 4px;
-    border: 2px solid black;
+
+.getOutButton:hover {
     background-color: rgb(52, 110, 18);
     margin-top: 10px;
 }
-button {
-    transition: background-color 0.2s ease
+
+.hide {
+    display: none;
 }
+
