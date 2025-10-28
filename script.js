@@ -24,7 +24,7 @@ function scam() {
         gain = gain.times(speedUp.div(20));
     }
     
-    player.token += gain;
+    player.token = player.token.add(gain);
     setTimeout(scam, timeout);
 }
 
