@@ -2,13 +2,15 @@ const player = {
     tokens: new Decimal(0),
     money: new Decimal(0),
     
-    scamming: true,
+    scamming: false,
+    scamTimeouted: false,
+    scamTimeout: 3000,
     ups: {
         _total: new Decimal(0),
 
         yield: new Decimal(0),
         speed: new Decimal(0),
-        transFmla: new Decimal(0),
+        trans: new Decimal(0),
     }
 }
 
@@ -17,10 +19,11 @@ function getOut() {
     removeClass("mainDiv", "hide");
 }
 
+var scamTimeoutID;
 function scam() {
-    if (!player.scamming) { return; }
-    let gain = Decimal.pow(1.4, player.ups.yield);
+    if (!(player.scamming || player.scamTimeouted)) { player.scamming = true; }
 
+    let gain = Decimal.pow(1.4, player.ups.yield);
     let speedUp = Decimal.pow(1.4, player.ups.speed);
     let timeout = Decimal.div(1e3, speedUp);
 
@@ -30,12 +33,24 @@ function scam() {
     }
     
     player.token = player.token.add(gain);
-    setTimeout(scam, timeout);
+    scamTimeoutID = setTimeout(scam, timeout);
+}
+
+function scanFinish() {
+    let transMult = Decimal.pow(1.4, player.ups.trans);
+    let gain = player.tokens.div(20).pow(0.5).times(2).times(transMult);
+
+    clearTimeout(scamTimeoutID);
+
+    player.tokens = new Decimal(0);
+    player.money = player.money.add(gain);
+    player.scamTimeouted = true;
+    setTimeout(() => { player.scamTimeouted = false; }, scamTimeout);
 }
 
 function upgradeBuy(property) {
     let costMult;
-    if (property != "transFmla") { costMult = 1.5; }
+    if (property != "trans") { costMult = 1.5; }
     else { costMult = 1.65; }
 
     let cost = Decimal.pow(costMult, player.ups._total).times(3);
@@ -43,8 +58,6 @@ function upgradeBuy(property) {
         player.money = player.money.sub(cost);
         player.ups[property] = player.ups[property].add(1);
         player.ups._total = player.ups._total.add(1);
-    } else {
-        alert("Not enough money!");
     }
 }
 
