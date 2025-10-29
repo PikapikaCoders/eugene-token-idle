@@ -21,40 +21,43 @@
 
     <div id="mainDiv" class="hide">
         <h2 id="amount" style="text-align: center">You have 0 eugene tokens & 0 money</h2>
-        <button class="button1" style="margin-left: 50%;" onmousedown="scam()" onmouseup="scamFinish()">SCAM</button>
+        <button id="scam" class="button1" style="margin-left: 50%;" onmousedown="scam()" onmouseup="scamFinish()">SCAM (Cooldown: false)</button>
 
         <div style="display:flex; justify-content: center;">
             <div class="card">
                 <h3>x1.4 Eugene Token yield</h3>
                 <p id="yieldupamount"></p>
+                <p id="yieldCost"></p>
                 <br>
                 <div style="display:flex;">
-                    <button class="button1" style="margin-right:10px" onclick="upgradeBuy(yield, 1)">Buy 1</button> 
-                    <button class="button1" style="margin-right:10px" onclick="upgradeBuy(yield, 5)">Buy 5</button> 
-                    <button class="button1" style="margin-right:10px" onclick="upgradeBuy(yield, 10)">Buy 10</button>
-                    <button class="button1" style="margin-right:10px" onclick="upgradeBuy(yield, 0)">Buy Max</button>
+                    <button class="button1" style="margin-right:10px" onclick="upgradeBuy('yield', 1)">Buy 1</button> 
+                    <button class="button1" style="margin-right:10px" onclick="upgradeBuy('yield', 5)">Buy 5</button> 
+                    <button class="button1" style="margin-right:10px" onclick="upgradeBuy('yield', 10)">Buy 10</button>
+                    <button class="button1" style="margin-right:10px" onclick="upgradeBuy('yield', 0)">Buy Max</button>
                 </div>
             </div>
             <div class="card">
                 <h3>x1.4 Eugene Token speed</h3>
                 <p id="speedupamount"></p>
+                <p id="speedCost"></p>
                 <br>
                 <div style="display:flex;">
-                    <button class="button1" style="margin-right:10px" onclick="upgradeBuy(speed, 1)">Buy 1</button> 
-                    <button class="button1" style="margin-right:10px" onclick="upgradeBuy(speed, 5)">Buy 5</button> 
-                    <button class="button1" style="margin-right:10px" onclick="upgradeBuy(speed, 10)">Buy 10</button>
-                    <button class="button1" style="margin-right:10px" onclick="upgradeBuy(speed, 0)">Buy Max</button>
+                    <button class="button1" style="margin-right:10px" onclick="upgradeBuy('speed', 1)">Buy 1</button> 
+                    <button class="button1" style="margin-right:10px" onclick="upgradeBuy('speed', 5)">Buy 5</button> 
+                    <button class="button1" style="margin-right:10px" onclick="upgradeBuy('speed', 10)">Buy 10</button>
+                    <button class="button1" style="margin-right:10px" onclick="upgradeBuy('speed', 0)">Buy Max</button>
                 </div>
             </div>
             <div class="card">
                 <h3>x1.4 translation formula</h3>
                 <p id="transupamount"></p>
+                <p id="transCost"></p>
                 <br>
                 <div style="display:flex;">
-                    <button class="button1" style="margin-right:10px" onclick="upgradeBuy(trans, 1)">Buy 1</button> 
-                    <button class="button1" style="margin-right:10px" onclick="upgradeBuy(trans, 5)">Buy 5</button> 
-                    <button class="button1" style="margin-right:10px" onclick="upgradeBuy(trans, 10)">Buy 10</button>
-                    <button class="button1" style="margin-right:10px" onclick="upgradeBuy(trans, 0)">Buy Max</button>
+                    <button class="button1" style="margin-right:10px" onclick="upgradeBuy('trans', 1)">Buy 1</button> 
+                    <button class="button1" style="margin-right:10px" onclick="upgradeBuy('trans', 5)">Buy 5</button> 
+                    <button class="button1" style="margin-right:10px" onclick="upgradeBuy('trans', 10)">Buy 10</button>
+                    <button class="button1" style="margin-right:10px" onclick="upgradeBuy('trans', 0)">Buy Max</button>
                 </div>
             </div>
         </div>

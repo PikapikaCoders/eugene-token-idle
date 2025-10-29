@@ -21,6 +21,8 @@ function getOut() {
 
 var scamTimeoutID;
 function scam() {
+    if (player.scamTimeouted) { return; }
+    
     let speedUp = Decimal.pow(1.4, player.ups.speed);
     let timeout = Decimal.div(1e3, speedUp);
     
@@ -30,7 +32,7 @@ function scam() {
     }
 
     scamTimeoutID = setInterval(() => {
-        if (!(player.scamming || player.scamTimeouted)) { player.scamming = true; }
+        if (!player.scamming) { player.scamming = true; }
 
         let gain = Decimal.pow(1.4, player.ups.yield);
         player.tokens = player.tokens.add(gain);
@@ -79,5 +81,14 @@ function update() {
     changeElement("yieldupamount", `Bought: ${player.ups.yield}`);
     changeElement("speedupamount", `Bought: ${player.ups.speed}`);
     changeElement("transupamount", `Bought: ${player.ups.trans}`);
+
+    let costCheap = Decimal.pow(1.5, player.ups._total).times(3);
+    let costLessCheap = Decimal.pow(1.65, player.ups._total).times(3);
+
+    changeElement("yieldCost", `Cost: ${format(costCheap)} money`);
+    changeElement("speedCost", `Cost: ${format(costCheap)} money`);
+    changeElement("transCost", `Cost: ${format(costLessCheap)} money`);
+
     changeElement("amount", `You have ${format(player.tokens)} eugene tokens & ${format(player.money)} money`);
+    changeElement("scam", `SCAM (Cooldown: ${player.scamTimeouted})`);
 }
