@@ -26,18 +26,13 @@ function getOut() {
 var scamTimeoutID;
 function scam() {
     if (player.scamTimeouted) { return; }
-    
+
     if (!player.scamming) {
         player.scamming = true;
 
         let timeout = Decimal.div(1e3, Decimal.pow(1.4, player.ups.speed));
 
-        if (timeout < 50) {
-            timeout = 50;
-            timeoutMult = gain.times(speedUp.div(20));
-        }
-
-        scamTimeoutID = setTimeout(scamTimeoutFunc, timeout)
+        scamTimeoutID = setTimeout(scamTimeoutFunc, Decimal.max(timeout, 50))
     } else {
         let transMult = Decimal.pow(1.4, player.ups.trans);
         let gain = player.tokens.div(5).pow(0.5).times(transMult);
@@ -56,9 +51,9 @@ function scam() {
 
         let gain = Decimal.pow(1.4, player.ups.yield);
 
-        if (timeout < 50) {
-            timeout = 50;
-            timeoutMult = gain.times(speedUp.div(20));
+        if (timeout.lt(50)) {
+            timeout = new Decimal(50);
+            gain = gain.times(Decimal.pow(1.4, player.ups.speed).div(20));
         }
         
         player.tokens = player.tokens.add(gain);
@@ -71,7 +66,10 @@ function upgradeBuy(property, amount) {
     if (property != "trans") { costMult = 1.5; }
     else { costMult = 1.65; }
 
-    while (amount == 0) {
+    let max = amount;
+    if (amount == 0) max = 10000;
+
+    for (let i=0; i<max; i++) {
         let cost = Decimal.pow(costMult, player.ups._total).times(3);
         if (player.money.gte(cost)) {
             player.money = player.money.sub(cost);
@@ -81,30 +79,15 @@ function upgradeBuy(property, amount) {
             player.ups[`${property}Cost`].push(cost);
         } else { return; }
     }
-
-    for (let i=0; i<amount; i++) {
-        let cost = Decimal.pow(costMult, player.ups._total).times(3);
-        if (player.money.gte(cost)) {
-            player.money = player.money.sub(cost);
-            player.ups[property] = player.ups[property].add(1);
-            player.ups._total = player.ups._total.add(1);
-        } else { return; }
-    }
 }
 
 function upgradeRespec(property, amount) {
     let costArr = player.ups[`${property}Cost`];
 
-    while (amount == 0) {
-        let cost = costArr.pop();
-        if (cost == undefined) { return; }
+    let max = amount;
+    if (amount == 0) max = 10000;
 
-        player.money = player.money.add(cost);
-        player.ups[property] = player.ups[property].sub(1);
-        player.ups._total = player.ups._total.sub(1);
-    }
-
-    for (let i=0; i<amount; i++) {
+    for (let i=0; i<max; i++) {
         let cost = costArr.pop();
         if (cost == undefined) { return; }
 
