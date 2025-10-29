@@ -21,22 +21,24 @@ function getOut() {
 
 var scamTimeoutID;
 function scam() {
-    if (!(player.scamming || player.scamTimeouted)) { player.scamming = true; }
-
-    let gain = Decimal.pow(1.4, player.ups.yield);
     let speedUp = Decimal.pow(1.4, player.ups.speed);
     let timeout = Decimal.div(1e3, speedUp);
-
+    
     if (timeout < 50) {
         timeout = 50;
-        gain = gain.times(speedUp.div(20));
+        timeoutMult = gain.times(speedUp.div(20));
     }
-    
-    player.token = player.token.add(gain);
-    scamTimeoutID = setTimeout(scam, timeout);
+
+    scamTimeoutID = setInterval(() => {
+        if (!(player.scamming || player.scamTimeouted)) { player.scamming = true; }
+
+        let gain = Decimal.pow(1.4, player.ups.yield);
+        player.tokens = player.tokens.add(gain);
+
+    }, timeout)
 }
 
-function scanFinish() {
+function scamFinish() {
     let transMult = Decimal.pow(1.4, player.ups.trans);
     let gain = player.tokens.div(20).pow(0.5).times(2).times(transMult);
 
@@ -45,7 +47,7 @@ function scanFinish() {
     player.tokens = new Decimal(0);
     player.money = player.money.add(gain);
     player.scamTimeouted = true;
-    setTimeout(() => { player.scamTimeouted = false; }, scamTimeout);
+    setTimeout(() => { player.scamTimeouted = false; }, player.scamTimeout);
 }
 
 function upgradeBuy(property, amount) {
@@ -71,26 +73,11 @@ function upgradeBuy(property, amount) {
         } else { return; }
     }
 }
-setInterval(update, 1)
+
+setInterval(update, 1);
 function update() {
-    changeElement("yieldupamount","Bought: " + player.ups.yield)
-    changeElement("speedupamount","Bought: " + player.ups.speed)
-    changeElement("transupamount","Bought: " + player.ups.trans)
-    changeElement("moneyamount", "You have " + player.money + " money")
-}
-
-/*
-Hi, I am a comment!
-The foo and bar functions are only for reference.
-*/
-
-function foo() {
-    console.log(`I am ran! You have ${format(player.tokens)} eugene tokens!!!`);
-    return 0;
-}
-
-function bar(arg) {
-    console.log(`Hey! I found this element for you: ${getElement("eugene")}!`);
-    changeElement("eugene", arg);
-    return 0;
+    changeElement("yieldupamount", `Bought: ${player.ups.yield}`);
+    changeElement("speedupamount", `Bought: ${player.ups.speed}`);
+    changeElement("transupamount", `Bought: ${player.ups.trans}`);
+    changeElement("amount", `You have ${format(player.tokens)} eugene tokens & ${format(player.money)} money`);
 }
