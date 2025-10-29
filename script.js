@@ -11,6 +11,10 @@ const player = {
         yield: new Decimal(0),
         speed: new Decimal(0),
         trans: new Decimal(0),
+
+        yieldCost: [],
+        speedCost: [],
+        transCost: [],
     }
 }
 
@@ -25,16 +29,16 @@ function scam() {
     
     let speedUp = Decimal.pow(1.4, player.ups.speed);
     let timeout = Decimal.div(1e3, speedUp);
-    
-    if (timeout < 50) {
-        timeout = 50;
-        timeoutMult = gain.times(speedUp.div(20));
-    }
 
     scamTimeoutID = setInterval(() => {
         if (!player.scamming) { player.scamming = true; }
 
         let gain = Decimal.pow(1.4, player.ups.yield);
+
+        if (timeout < 50) {
+            timeout = 50;
+            timeoutMult = gain.times(speedUp.div(20));
+        }
         player.tokens = player.tokens.add(gain);
 
     }, timeout)
@@ -63,6 +67,8 @@ function upgradeBuy(property, amount) {
             player.money = player.money.sub(cost);
             player.ups[property] = player.ups[property].add(1);
             player.ups._total = player.ups._total.add(1);
+
+            player.ups[`${property}Cost`].push(cost);
         } else { return; }
     }
 
@@ -73,6 +79,28 @@ function upgradeBuy(property, amount) {
             player.ups[property] = player.ups[property].add(1);
             player.ups._total = player.ups._total.add(1);
         } else { return; }
+    }
+}
+
+function upgradeRespec(property, amount) {
+    let costArr = player.ups[`${property}Cost`];
+
+    while (amount == 0) {
+        let cost = costArr.pop();
+        if (cost == undefined) { return; }
+
+        player.money = player.money.add(cost);
+        player.ups[property] = player.ups[property].sub(1);
+        player.ups._total = player.ups._total.sub(1);
+    }
+
+    for (let i=0; i<amount; i++) {
+        let cost = costArr.pop();
+        if (cost == undefined) { return; }
+
+        player.money = player.money.add(cost);
+        player.ups[property] = player.ups[property].sub(1);
+        player.ups._total = player.ups._total.sub(1);
     }
 }
 
