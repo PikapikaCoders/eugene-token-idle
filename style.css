@@ -26,8 +26,7 @@ button {
     background-color: greenyellow;
 }
 
-.getOutButton {
-    width: 90px;
+.button1 {
     height: 30px;
     font-size: 14px;
     border-radius: 4px;
@@ -36,7 +35,7 @@ button {
     margin-top: 10px;
 }
 
-.getOutButton:hover {
+.button1:hover {
     background-color: rgb(52, 110, 18);
     margin-top: 10px;
 }

@@ -4,7 +4,7 @@ const player = {
     
     scamming: false,
     scamTimeouted: false,
-    scamTimeout: 3000,
+    scamTimeout: 5000,
     ups: {
         _total: new Decimal(0),
 
