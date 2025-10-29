@@ -1,6 +1,8 @@
 const player = {
     tokens: new Decimal(0),
-    money: new Decimal(0),
+    money: new Decimal(10),
+
+    vel: new Decimal(0),
     
     scamming: false,
     scamTimeouted: false,
@@ -8,11 +10,11 @@ const player = {
     ups: {
         _total: new Decimal(0),
 
-        yield: new Decimal(0),
+        accel: new Decimal(0),
         speed: new Decimal(0),
         trans: new Decimal(0),
 
-        yieldCost: [],
+        accelCost: [],
         speedCost: [],
         transCost: [],
     }
@@ -41,6 +43,7 @@ function scam() {
         
         player.scamming = false;
         player.tokens = new Decimal(0);
+        player.vel = new Decimal(0);
         player.money = player.money.add(gain);
         player.scamTimeouted = true;
         setTimeout(() => { player.scamTimeouted = false; }, player.scamTimeout);
@@ -49,12 +52,15 @@ function scam() {
     function scamTimeoutFunc() {
         let timeout = Decimal.div(1e3, Decimal.pow(1.4, player.ups.speed));
 
-        let gain = Decimal.pow(1.4, player.ups.yield);
+        let gain = new Decimal(1);
 
         if (timeout.lt(50)) {
             timeout = new Decimal(50);
             gain = gain.times(Decimal.pow(1.4, player.ups.speed).div(20));
         }
+
+        player.vel = player.vel.add(Decimal.pow(1.04, player.ups.accel).sub(1))
+        gain = gain.times(player.vel.add(1))
         
         player.tokens = player.tokens.add(gain);
         scamTimeoutID = setTimeout(scamTimeoutFunc, timeout);
@@ -99,14 +105,14 @@ function upgradeRespec(property, amount) {
 
 setInterval(update, 1);
 function update() {
-    changeElement("yieldupamount", `Bought: ${player.ups.yield}`);
+    changeElement("accelupamount", `Bought: ${player.ups.accel}`);
     changeElement("speedupamount", `Bought: ${player.ups.speed}`);
     changeElement("transupamount", `Bought: ${player.ups.trans}`);
 
     let costCheap = Decimal.pow(1.5, player.ups._total).times(3);
     let costLessCheap = Decimal.pow(1.65, player.ups._total).times(3);
 
-    changeElement("yieldCost", `Cost: ${format(costCheap)} money`);
+    changeElement("accelCost", `Cost: ${format(costCheap)} money`);
     changeElement("speedCost", `Cost: ${format(costCheap)} money`);
     changeElement("transCost", `Cost: ${format(costLessCheap)} money`);
 
