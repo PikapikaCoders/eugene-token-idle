@@ -48,16 +48,27 @@ function scanFinish() {
     setTimeout(() => { player.scamTimeouted = false; }, scamTimeout);
 }
 
-function upgradeBuy(property) {
+function upgradeBuy(property, amount) {
     let costMult;
     if (property != "trans") { costMult = 1.5; }
     else { costMult = 1.65; }
 
-    let cost = Decimal.pow(costMult, player.ups._total).times(3);
-    if (player.money.gte(cost)) {
-        player.money = player.money.sub(cost);
-        player.ups[property] = player.ups[property].add(1);
-        player.ups._total = player.ups._total.add(1);
+    while (amount == 0) {
+        let cost = Decimal.pow(costMult, player.ups._total).times(3);
+        if (player.money.gte(cost)) {
+            player.money = player.money.sub(cost);
+            player.ups[property] = player.ups[property].add(1);
+            player.ups._total = player.ups._total.add(1);
+        } else { return; }
+    }
+
+    for (let i=0; i<amount; i++) {
+        let cost = Decimal.pow(costMult, player.ups._total).times(3);
+        if (player.money.gte(cost)) {
+            player.money = player.money.sub(cost);
+            player.ups[property] = player.ups[property].add(1);
+            player.ups._total = player.ups._total.add(1);
+        } else { return; }
     }
 }
 
