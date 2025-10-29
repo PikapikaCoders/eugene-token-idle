@@ -27,11 +27,32 @@ var scamTimeoutID;
 function scam() {
     if (player.scamTimeouted) { return; }
     
-    let speedUp = Decimal.pow(1.4, player.ups.speed);
-    let timeout = Decimal.div(1e3, speedUp);
+    if (!player.scamming) {
+        player.scamming = true;
 
-    scamTimeoutID = setInterval(() => {
-        if (!player.scamming) { player.scamming = true; }
+        let timeout = Decimal.div(1e3, Decimal.pow(1.4, player.ups.speed));
+
+        if (timeout < 50) {
+            timeout = 50;
+            timeoutMult = gain.times(speedUp.div(20));
+        }
+
+        scamTimeoutID = setTimeout(scamTimeoutFunc, timeout)
+    } else {
+        let transMult = Decimal.pow(1.4, player.ups.trans);
+        let gain = player.tokens.div(5).pow(0.5).times(transMult);
+
+        clearTimeout(scamTimeoutID);
+        
+        player.scamming = false;
+        player.tokens = new Decimal(0);
+        player.money = player.money.add(gain);
+        player.scamTimeouted = true;
+        setTimeout(() => { player.scamTimeouted = false; }, player.scamTimeout);
+    }
+
+    function scamTimeoutFunc() {
+        let timeout = Decimal.div(1e3, Decimal.pow(1.4, player.ups.speed));
 
         let gain = Decimal.pow(1.4, player.ups.yield);
 
@@ -39,21 +60,10 @@ function scam() {
             timeout = 50;
             timeoutMult = gain.times(speedUp.div(20));
         }
+        
         player.tokens = player.tokens.add(gain);
-
-    }, timeout)
-}
-
-function scamFinish() {
-    let transMult = Decimal.pow(1.4, player.ups.trans);
-    let gain = player.tokens.div(20).pow(0.5).times(2).times(transMult);
-
-    clearTimeout(scamTimeoutID);
-
-    player.tokens = new Decimal(0);
-    player.money = player.money.add(gain);
-    player.scamTimeouted = true;
-    setTimeout(() => { player.scamTimeouted = false; }, player.scamTimeout);
+        scamTimeoutID = setTimeout(scamTimeoutFunc, timeout);
+    }
 }
 
 function upgradeBuy(property, amount) {
@@ -118,5 +128,5 @@ function update() {
     changeElement("transCost", `Cost: ${format(costLessCheap)} money`);
 
     changeElement("amount", `You have ${format(player.tokens)} eugene tokens & ${format(player.money)} money`);
-    changeElement("scam", `SCAM (Cooldown: ${player.scamTimeouted})`);
+    changeElement("scam", `SCAM (Scamming: ${player.scamming} | Cooldown: ${player.scamTimeouted})`);
 }
