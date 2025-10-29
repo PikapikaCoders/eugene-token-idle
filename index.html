@@ -20,10 +20,13 @@
     </div>
 
     <div id="mainDiv" class="hide">
-        <div style="display:flex;">
+        <h2 id="moneyamount" style="text-align: center">
+            You have 0 money
+        </h2>
+        <div style="display:flex; justify-content: center;">
             <div class="card">
                 <h3>x1.4 Eugene Token yield</h3>
-                <br>
+                <p id="yieldupamount"></p>
                 <br>
                 <div style="display:flex;">
                     <button class="button1" style="margin-right:10px" onclick="upgradeBuy(yield, 1)">Buy 1</button> 
@@ -34,7 +37,7 @@
             </div>
             <div class="card">
                 <h3>x1.4 Eugene Token speed</h3>
-                <br>
+                <p id="speedupamount"></p>
                 <br>
                 <div style="display:flex;">
                     <button class="button1" style="margin-right:10px" onclick="upgradeBuy(speed, 1)">Buy 1</button> 
@@ -45,7 +48,7 @@
             </div>
             <div class="card">
                 <h3>x1.4 translation formula</h3>
-                <br>
+                <p id="transupamount"></p>
                 <br>
                 <div style="display:flex;">
                     <button class="button1" style="margin-right:10px" onclick="upgradeBuy(trans, 1)">Buy 1</button> 

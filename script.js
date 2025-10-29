@@ -71,6 +71,13 @@ function upgradeBuy(property, amount) {
         } else { return; }
     }
 }
+setInterval(update, 1)
+function update() {
+    changeElement("yieldupamount","Bought: " + player.ups.yield)
+    changeElement("speedupamount","Bought: " + player.ups.speed)
+    changeElement("transupamount","Bought: " + player.ups.trans)
+    changeElement("moneyamount", "You have " + player.money + " money")
+}
 
 /*
 Hi, I am a comment!
