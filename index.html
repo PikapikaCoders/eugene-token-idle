@@ -7,7 +7,7 @@
     <link rel=stylesheet type="text/css" href="style.css">
 </head>
 
-<body style="background-color: #d0c530;">
+<body>
     <div style="display:flex; background-color:greenyellow;">
         <img src="eugene_token.png" height="82px" style="margin-bottom: 10px; margin-top: 10px; margin-left: 10px"> 
         <h1 id="eugene" style="margin-left:20px; margin-top:31px">Eugene Token Idle</h1>
@@ -18,69 +18,86 @@
         <p>This is an idle game about scamming others using <em>Eugene Tokens</em>. Please enjoy the game!!!!!!!</p>
         <button class="button1" onclick="getOut()">GET OUT</button>
     </div>
-
+    
     <div id="mainDiv" class="hide">
+        <lr></lr>
+        <ul class="tabs">
+            <li data-tab-target="#main" class="active tab" style="background-color:#eaff31">Main</li>
+            <li data-tab-target="#prestige" class="tab" style="background-color:#f831ff">Prestige</li>
+        </ul>
+
         <h2 id="amount" style="text-align: center">You have 0 eugene tokens & 0 money</h2>
-        <button id="scam" class="button1" style="display: block; margin: 0 auto;" onclick="scam()">SCAM (Scamming: false | Cooldown: false)</button>
 
-        <div style="display:flex; justify-content: center;">
-            <div class="card">
-                <h3>x1.04 Eugene Token acceleration</h3>
-                <p id="accelupamount"></p>
-                <p id="accelCost"></p>
-                <br>
-                <div style="display:flex;">
-                    <button class="button1" style="margin-right:10px" onclick="upgradeBuy('accel', 1)">Buy 1</button> 
-                    <button class="button1" style="margin-right:10px" onclick="upgradeBuy('accel', 5)">Buy 5</button> 
-                    <button class="button1" style="margin-right:10px" onclick="upgradeBuy('accel', 10)">Buy 10</button>
-                    <button class="button1" style="margin-right:10px" onclick="upgradeBuy('accel', 0)">Buy Max</button>
+        <div id="main" data-tab-content class="active">
+            <button id="scam" class="button1" style="display: block; margin: 0 auto;" onclick="scam()">SCAM (Scamming: false | Cooldown: false)</button>
+
+            <div style="display:flex; justify-content: center;">
+                <div class="card">
+                    <h3 id="accelDesc">x1.04 Eugene Token acceleration</h3>
+                    <p id="accelupamount"></p>
+                    <p id="accelCost"></p>
+                    <br>
+                    <div style="display:flex;">
+                        <button class="button1" style="margin-right:10px" onclick="upgradeBuy('accel', 1)">Buy 1</button> 
+                        <button class="button1" style="margin-right:10px" onclick="upgradeBuy('accel', 5)">Buy 5</button> 
+                        <button class="button1" style="margin-right:10px" onclick="upgradeBuy('accel', 10)">Buy 10</button>
+                        <button class="button1" style="margin-right:10px" onclick="upgradeBuy('accel', 0)">Buy Max</button>
+                    </div>
+
+                    <div style="display:flex;">
+                        <button class="button1" style="margin-right:10px" onclick="upgradeRespec('accel', 1)">Respec 1</button> 
+                        <button class="button1" style="margin-right:10px" onclick="upgradeRespec('accel', 5)">Respec 5</button> 
+                        <button class="button1" style="margin-right:10px" onclick="upgradeRespec('accel', 10)">Respec 10</button>
+                        <button class="button1" style="margin-right:10px" onclick="upgradeRespec('accel', 0)">Respec Max</button>
+                    </div>
                 </div>
+                <div class="card">
+                    <h3 id="speedDesc">x1.4 Eugene Token speed</h3>
+                    <p id="speedupamount"></p>
+                    <p id="speedCost"></p>
+                    <br>
+                    <div style="display:flex;">
+                        <button class="button1" style="margin-right:10px" onclick="upgradeBuy('speed', 1)">Buy 1</button> 
+                        <button class="button1" style="margin-right:10px" onclick="upgradeBuy('speed', 5)">Buy 5</button> 
+                        <button class="button1" style="margin-right:10px" onclick="upgradeBuy('speed', 10)">Buy 10</button>
+                        <button class="button1" style="margin-right:10px" onclick="upgradeBuy('speed', 0)">Buy Max</button>
+                    </div>
 
-                <div style="display:flex;">
-                    <button class="button1" style="margin-right:10px" onclick="upgradeRespec('accel', 1)">Respec 1</button> 
-                    <button class="button1" style="margin-right:10px" onclick="upgradeRespec('accel', 5)">Respec 5</button> 
-                    <button class="button1" style="margin-right:10px" onclick="upgradeRespec('accel', 10)">Respec 10</button>
-                    <button class="button1" style="margin-right:10px" onclick="upgradeRespec('accel', 0)">Respec Max</button>
+                    <div style="display:flex;">
+                        <button class="button1" style="margin-right:10px" onclick="upgradeRespec('speed', 1)">Respec 1</button> 
+                        <button class="button1" style="margin-right:10px" onclick="upgradeRespec('speed', 5)">Respec 5</button> 
+                        <button class="button1" style="margin-right:10px" onclick="upgradeRespec('speed', 10)">Respec 10</button>
+                        <button class="button1" style="margin-right:10px" onclick="upgradeRespec('speed', 0)">Respec Max</button>
+                    </div>
+                </div>
+                <div class="card">
+                    <h3 id="transDesc">x1.4 translation formula</h3>
+                    <p id="transupamount"></p>
+                    <p id="transCost"></p>
+                    <br>
+                    <div style="display:flex;">
+                        <button class="button1" style="margin-right:10px" onclick="upgradeBuy('trans', 1)">Buy 1</button> 
+                        <button class="button1" style="margin-right:10px" onclick="upgradeBuy('trans', 5)">Buy 5</button> 
+                        <button class="button1" style="margin-right:10px" onclick="upgradeBuy('trans', 10)">Buy 10</button>
+                        <button class="button1" style="margin-right:10px" onclick="upgradeBuy('trans', 0)">Buy Max</button>
+                    </div>
+
+                    <div style="display:flex;">
+                        <button class="button1" style="margin-right:10px" onclick="upgradeRespec('trans', 1)">Respec 1</button> 
+                        <button class="button1" style="margin-right:10px" onclick="upgradeRespec('trans', 5)">Respec 5</button> 
+                        <button class="button1" style="margin-right:10px" onclick="upgradeRespec('trans', 10)">Respec 10</button>
+                        <button class="button1" style="margin-right:10px" onclick="upgradeRespec('trans', 0)">Respec Max</button>
+                    </div>
                 </div>
             </div>
-            <div class="card">
-                <h3>x1.4 Eugene Token speed</h3>
-                <p id="speedupamount"></p>
-                <p id="speedCost"></p>
-                <br>
-                <div style="display:flex;">
-                    <button class="button1" style="margin-right:10px" onclick="upgradeBuy('speed', 1)">Buy 1</button> 
-                    <button class="button1" style="margin-right:10px" onclick="upgradeBuy('speed', 5)">Buy 5</button> 
-                    <button class="button1" style="margin-right:10px" onclick="upgradeBuy('speed', 10)">Buy 10</button>
-                    <button class="button1" style="margin-right:10px" onclick="upgradeBuy('speed', 0)">Buy Max</button>
-                </div>
+        </div>
 
-                <div style="display:flex;">
-                    <button class="button1" style="margin-right:10px" onclick="upgradeRespec('speed', 1)">Respec 1</button> 
-                    <button class="button1" style="margin-right:10px" onclick="upgradeRespec('speed', 5)">Respec 5</button> 
-                    <button class="button1" style="margin-right:10px" onclick="upgradeRespec('speed', 10)">Respec 10</button>
-                    <button class="button1" style="margin-right:10px" onclick="upgradeRespec('speed', 0)">Respec Max</button>
-                </div>
-            </div>
-            <div class="card">
-                <h3>x1.4 translation formula</h3>
-                <p id="transupamount"></p>
-                <p id="transCost"></p>
-                <br>
-                <div style="display:flex;">
-                    <button class="button1" style="margin-right:10px" onclick="upgradeBuy('trans', 1)">Buy 1</button> 
-                    <button class="button1" style="margin-right:10px" onclick="upgradeBuy('trans', 5)">Buy 5</button> 
-                    <button class="button1" style="margin-right:10px" onclick="upgradeBuy('trans', 10)">Buy 10</button>
-                    <button class="button1" style="margin-right:10px" onclick="upgradeBuy('trans', 0)">Buy Max</button>
-                </div>
-
-                <div style="display:flex;">
-                    <button class="button1" style="margin-right:10px" onclick="upgradeRespec('trans', 1)">Respec 1</button> 
-                    <button class="button1" style="margin-right:10px" onclick="upgradeRespec('trans', 5)">Respec 5</button> 
-                    <button class="button1" style="margin-right:10px" onclick="upgradeRespec('trans', 10)">Respec 10</button>
-                    <button class="button1" style="margin-right:10px" onclick="upgradeRespec('trans', 0)">Respec Max</button>
-                </div>
-            </div>
+        <div id="prestige" data-tab-content>
+            <h3 id="prestigeAmount" style="text-align: center; color: #68166b;">You have 0 prestige tokens.</h3>
+            <button class="buttonPrestige" onclick="prestige()">
+                <h3 id="prestigeGain">Prestige to gain 0 prestige tokens.</h3>
+                <p style="font-size:11px;">(Unlock: e3 <= money)</p>
+            </button>
         </div>
     </div>
     
@@ -88,5 +105,19 @@
     <script type="text/javascript" src="node_modules/eternal_notations/dist/eternal_notations.js"></script>
     <script type="text/javascript" src="utils.js"></script>
     <script type="text/javascript" src="script.js"></script>
+
+    <script type="module">
+        const tabs = document.querySelectorAll(".tab");
+        const tabContents = document.querySelectorAll("[data-tab-content]");
+        tabs.forEach(tab => {
+          tab.addEventListener("click", () => {
+            const target = document.querySelector(tab.dataset.tabTarget);
+            tabContents.forEach(tabContent => {
+              tabContent.classList.remove("active");
+            });
+            target.classList.add("active");
+          });
+        });
+    </script>
 
 </body>
