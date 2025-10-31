@@ -163,7 +163,7 @@ function update() {
     changeElement("speedDesc", desc[1]);
     changeElement("transDesc", desc[2]);
 
-    let prestigeTknGain = new Decimal(0); //TO-DO
+    let prestigeTknGain = Decimal.max(player.money, 300).div(100).sub(3).pow(Decimal.ln(2));
 
     player.prestigeTknGain = prestigeTknGain;
 
