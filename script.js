@@ -113,7 +113,7 @@ function upgradeRespec(property, amount) {
 
 function prestige(gaining = true) {
     if (gaining) {
-        if (player.money.lt(1e3)) { return; }
+        if (player.money.lt(100)) { return; }
 
         player.prestige = player.prestige.add(1);
         player.prestigeTkn = player.prestigeTkn.add(player.prestigeTknGain);
@@ -163,7 +163,7 @@ function update() {
     changeElement("speedDesc", desc[1]);
     changeElement("transDesc", desc[2]);
 
-    let prestigeTknGain = Decimal.max(player.money, 300).div(100).sub(3).pow(Decimal.ln(2));
+    let prestigeTknGain = Decimal.max(player.money.sub(100), 0).div(30).pow(Decimal.ln(2));
 
     player.prestigeTknGain = prestigeTknGain;
 
