@@ -22,11 +22,23 @@
     <div id="mainDiv" class="hide">
         <lr></lr>
         <ul class="tabs">
+            <li data-tab-target="#options" class="tab" style="background-color:#faffce">Options</li>
             <li data-tab-target="#main" class="active tab" style="background-color:#eaff31">Main</li>
             <li data-tab-target="#prestige" class="tab" style="background-color:#f831ff">Prestige</li>
         </ul>
 
         <h2 id="amount" style="text-align: center">You have 0 eugene tokens & 0 money</h2>
+
+        <div id="options" data-tab-content>
+            <details style="background-color:#faffce; border:3px solid #8c9171;">
+                <summary>[Save]</summary>
+                <div class="flex" style="justify-content: center;">
+                    <button class="buttonPrestige bigFont margin" onclick="utilsSave()">Save</button>
+                    <button id="autosave" class="buttonPrestige bigFont margin" onclick="utilsAutosave()">Autosave: On</button>
+                    <button class="buttonPrestige bigFont margin" onclick="utilsDeleteSave()">Delete Save</button>
+                </div>
+            </details>
+        </div>
 
         <div id="main" data-tab-content class="active">
             <button id="scam" class="button1" onclick="scam()">SCAM (Scamming: false | Cooldown: false)</button>
@@ -94,13 +106,13 @@
 
         <div id="prestige" data-tab-content>
             <h3 id="prestigeAmount" style="color: #68166b;">You have 0 prestige tokens.</h3>
-            <button class="buttonPrestige" onclick="prestige()">
+            <button class="buttonPrestige pink" onclick="prestige()">
                 <h3 id="prestigeGain">Prestige to gain 0 prestige tokens.</h3>
                 <p>(Unlock: money >= 100)</p>
             </button><br>
 
             <details style="background-color:#f6e7ff; border:3px solid #aa4594;">
-                <summary class="pointer" style="font-family: Monospace; font-size: 18px;">[QOL Upgrades]</summary>
+                <summary style="font-family: Monospace; font-size: 18px;">[QOL Upgrades]</summary>
                 <div class="flex">
                     <div class="card" style="background-color:#fcb0ff; width: 350px;">
                         <h3 id="qolTitle">QOL Upgrade #1</h3>
@@ -108,8 +120,8 @@
                         <p id="qolCost"></p>
                         <br>
                         <div class="flex">
-                            <button class="button1" style="margin-right:10px; background-color:#eb8bee;" onclick="qolBuy()">Buy</button>
-                            <button class="button1" style="margin-right:10px; background-color:#eb8bee;" onclick="qolBuy('respec')">Respec</button>
+                            <button class="button1 pink" style="margin-right:10px;" onclick="qolBuy()">Buy</button>
+                            <button class="button1 pink" style="margin-right:10px;" onclick="qolBuy('respec')">Respec</button>
                         </div>
                     </div>
 
@@ -127,6 +139,7 @@
     <script type="text/javascript" src="node_modules/eternal_notations/dist/eternal_notations.js"></script>
     <script type="text/javascript" src="utils.js"></script>
     <script type="text/javascript" src="script.js"></script>
+    <script type="text/javascript" src="save.js"></script>
 
     <script type="module">
         const tabs = document.querySelectorAll(".tab");

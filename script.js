@@ -1,30 +1,37 @@
-const player = {
-    tokens: new Decimal(0),
-    money: new Decimal(10),
-    vel: new Decimal(0),
+let player;
 
-    prestige: new Decimal(0),
-    prestigeTkn: new Decimal(0),
-    prestigeTknGain: new Decimal(0),
-    prestigeTKnBest: new Decimal(0),
-    
-    scamming: false,
-    scamTimeouted: false,
-    scamTimeout: 5000,
-    ups: {
-        _total: new Decimal(0),
+function setDefaultPlayer() {
+    player = {
+        tokens: new Decimal(0),
+        money: new Decimal(10),
+        vel: new Decimal(0),
 
-        accel: new Decimal(0),
-        speed: new Decimal(0),
-        trans: new Decimal(0),
+        prestige: new Decimal(0),
+        prestigeTkn: new Decimal(0),
+        prestigeTknGain: new Decimal(0),
+        prestigeTKnBest: new Decimal(0),
+        
+        scamming: false,
+        scamTimeouted: false,
+        scamTimeout: 5000,
+        ups: {
+            _total: new Decimal(0),
 
-        accelCost: [],
-        speedCost: [],
-        transCost: [],
+            accel: new Decimal(0),
+            speed: new Decimal(0),
+            trans: new Decimal(0),
 
-        qolTotal: 0,
+            accelCost: [],
+            speedCost: [],
+            transCost: [],
+
+            qolTotal: 0,
+        },
+
+        autosave: true,
     }
 }
+
 
 function getOut() {
     addClass("getOutDiv", "hide");
@@ -175,6 +182,11 @@ function qolBuy(type="buy") {
 
 setInterval(update, 1);
 function update() {
+    let autosave;
+    if (player.autosave) { autosave = "On"; }
+    else { autosave = "Off" }
+    changeElement("autosave", `Autosave: ${autosave}`);
+
     changeElement("accelupamount", `Bought: ${player.ups.accel}`);
     changeElement("speedupamount", `Bought: ${player.ups.speed}`);
     changeElement("transupamount", `Bought: ${player.ups.trans}`);
