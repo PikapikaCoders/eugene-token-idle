@@ -160,12 +160,16 @@ function qolBuy(type="buy") {
 
     cost = qolGetCost(qolTotal);
 
-    if (type == "buy" && player.prestigeTkn.gte(cost)) {
-        player.prestigeTkn = player.prestigeTkn.sub(cost);
-        player.ups.qolTotal += 1;
+    if (type == "buy") {
+        if (player.prestigeTkn.gte(cost)) {
+            player.prestigeTkn = player.prestigeTkn.sub(cost);
+            player.ups.qolTotal += 1;
+        }
     } else {
-        player.prestigeTkn = player.prestigeTkn.add(cost);
-        player.ups.qolTotal -= 1;
+        if (player.ups.qolTotal > 0) {
+            player.prestigeTkn = player.prestigeTkn.add(cost);
+            player.ups.qolTotal -= 1;
+        }
     }
 }
 
