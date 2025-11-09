@@ -93,11 +93,33 @@
         </div>
 
         <div id="prestige" data-tab-content>
-            <h3 id="prestigeAmount" style="text-align: center; color: #68166b;">You have 0 prestige tokens.</h3>
+            <h3 id="prestigeAmount" style="color: #68166b;">You have 0 prestige tokens.</h3>
             <button class="buttonPrestige" onclick="prestige()">
                 <h3 id="prestigeGain">Prestige to gain 0 prestige tokens.</h3>
-                <p style="font-size:11px;">(Unlock: money >= 100)</p>
-            </button>
+                <p>(Unlock: money >= 100)</p>
+            </button><br>
+
+            <details style="background-color:#f6e7ff; border:3px solid #aa4594;">
+                <summary class="pointer" style="font-family: Monospace; font-size: 18px;">[QOL Upgrades]</summary>
+                <div class="flex">
+                    <div class="card" style="background-color:#fcb0ff; width: 350px;">
+                        <h3 id="qolTitle">QOL Upgrade #1</h3>
+                        <p id="qolDesc"></p>
+                        <p id="qolCost"></p>
+                        <br>
+                        <div class="flex">
+                            <button class="button1" style="margin-right:10px; background-color:#eb8bee;" onclick="qolBuy()">Buy</button>
+                            <button class="button1" style="margin-right:10px; background-color:#eb8bee;" onclick="qolBuy('respec')">Respec</button>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h3>Previously Bought:</h3>
+                        <p id="qolPrev">Nothing</p>
+                    </div>
+                </div>
+            </details>
+            
         </div>
     </div>
     
