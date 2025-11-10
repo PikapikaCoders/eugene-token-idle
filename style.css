@@ -20,7 +20,7 @@ details {
     border-radius: 10px;
     margin: 20px auto;
     padding: 8px;
-    width: 40%;
+    width: 80%;
 }
 
 summary {
@@ -53,8 +53,8 @@ summary {
     font-size: 12px;
 }
 .tab-content {
-    margin-left: 20px;
-    margin-right: 20px;
+    margin-left: 5%;
+    margin-right: 5%;
 }
 .all_tabs {
     flex: 1;
@@ -94,11 +94,8 @@ button.button1:hover {
 button.buttonPrestige {
     height: 100px;
     width: 170px;
-    border-radius: 4px;
+    border-radius: 6px;
     border: 2px solid black;
-    margin-top: 10px;
-}
-button.buttonPrestige:hover {
     margin-top: 10px;
 }
 

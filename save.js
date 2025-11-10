@@ -13,7 +13,7 @@ const nestedDecimalArr = [
 ]
 
 function utilsLoad(json) {
-    if (json === null) { return; } 
+    if (json === null) { setDefaultPlayer(); return; } 
     temp = JSON.parse(json);
     if (temp.autosave) { setInterval(utilsSave, 1000); }
 
