@@ -48,4 +48,15 @@ function utilsDeleteSave() {
     setTimeout(() => { window.location.reload(); }, 100);
 }
 
+function utilsExport() {
+    prompt("Exported!", localStorage.getItem('eugeneTokenIdlePlayer'));
+}
+
+function utilsImport() {
+    const json = window.prompt('Type in the exported string (in JSON format)');
+    const confirm = window.confirm("Are you sure? It will replace your current save!");
+
+    if (confirm) { utilsLoad(json) };
+}
+
 window.onload = () => { utilsLoad(localStorage.getItem("eugeneTokenIdlePlayer")); };
