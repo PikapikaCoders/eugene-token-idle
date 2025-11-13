@@ -6,6 +6,8 @@ function setDefaultPlayer() {
         money: new Decimal(10),
         vel: new Decimal(0),
 
+        moneyTotal: new Decimal(0),
+
         prestige: new Decimal(0),
         prestigeTkn: new Decimal(0),
         prestigeTknGain: new Decimal(0),
@@ -38,6 +40,13 @@ function getOut() {
     removeClass("mainDiv", "hide");
 }
 
+function getScamMoney(token) {
+    const transMult = Decimal.pow(1.4, player.ups.trans);
+    let gain = token.div(5).pow(0.5).times(transMult);
+
+    return gain;
+}
+
 var scamTimeoutID;
 function scam() {
     if (player.scamTimeouted) { return; }
@@ -49,15 +58,14 @@ function scam() {
 
         scamTimeoutID = setTimeout(scamTimeoutFunc, Decimal.max(timeout, 50))
     } else {
-        let transMult = Decimal.pow(1.4, player.ups.trans);
-        let gain = player.tokens.div(5).pow(0.5).times(transMult);
-
+        const gain = getScamMoney(player.tokens);
         clearTimeout(scamTimeoutID);
         
         player.scamming = false;
         player.tokens = new Decimal(0);
         player.vel = new Decimal(0);
         player.money = player.money.add(gain);
+        player.moneyTotal = player.moneyTotal.add(gain);
         player.scamTimeouted = true;
         setTimeout(() => { player.scamTimeouted = false; }, player.scamTimeout);
     }
@@ -120,6 +128,12 @@ function upgradeRespec(property, amount) {
     }
 }
 
+function getPrestigeGain(money) {
+    let gain = Decimal.max(money.sub(100), 0).div(30).pow(Decimal.ln(2));
+
+    return gain;
+}
+
 function prestige(gaining = true) {
     if (gaining) {
         if (player.money.lt(100)) { return; }
@@ -131,6 +145,7 @@ function prestige(gaining = true) {
 
     player.tokens = new Decimal(0);
     player.money = new Decimal(10);
+    player.moneyTotal = new Decimal(10);
     player.vel = new Decimal(0);
     player.scamming = false;
     player.scamTimeouted = false;
@@ -146,7 +161,8 @@ function prestige(gaining = true) {
 function qolGetCost(total) {
     switch (total) {
         case 0: cost = 3; break;
-        case 1: cost = new Decimal("ee1000"); break;
+        case 1: cost = 100; break;
+        default: cost = new Decimal("eeeee100"); break;
     }
 
     return cost;
@@ -155,6 +171,7 @@ function qolGetCost(total) {
 function qolGetDesc(total) {
     switch (total) {
         case 0: desc = "Can buy / respec while scamming."; break;
+        case 1: desc = "See more stats."; break;
         default: desc = "Maxed Out"; break;
     }
 
@@ -198,11 +215,14 @@ function update() {
     changeElement("speedCost", `Cost: ${format(costCheap)} money`);
     changeElement("transCost", `Cost: ${format(costLessCheap)} money`);
 
-    changeElement("amount", `You have ${format(player.tokens)} eugene tokens & ${format(player.money)} money`);
+    const qolTotal = player.ups.qolTotal
+    let moneyOnStop = "";
+    if (qolTotal >= 2) { moneyOnStop = ` (+${format(getScamMoney(player.tokens))})` }
+
+    changeElement("amount", `You have ${format(player.tokens)} eugene tokens & ${format(player.money)} money${moneyOnStop}`);
     changeElement("scam", `SCAM (Scamming: ${player.scamming} | Cooldown: ${player.scamTimeouted})`);
     
     let desc = [];
-    const qolTotal = player.ups.qolTotal;
     if (player.scamming && qolTotal < 1) {
         for (let i=0; i<3; i++) { desc[i] = "[No upgrades when scamming!]"; }
     } else {
@@ -215,12 +235,15 @@ function update() {
     changeElement("speedDesc", desc[1]);
     changeElement("transDesc", desc[2]);
 
-    let prestigeTknGain = Decimal.max(player.money.sub(100), 0).div(30).pow(Decimal.ln(2));
-
-    player.prestigeTknGain = prestigeTknGain;
+    player.prestigeTknGain = getPrestigeGain(player.money);
 
     changeElement("prestigeAmount", `You have ${format(player.prestigeTkn)} prestige tokens.`);
     changeElement("prestigeGain", `Prestige to gain ${format(player.prestigeTknGain)} prestige tokens.`);
+
+    let prestigeGainRespec = "";
+    if (qolTotal >= 2) { prestigeGainRespec = `(+${getPrestigeGain(player.moneyTotal)} prestige tokens on respec all upgrades)`; }
+
+    changeElement("prestigeGainRespec", prestigeGainRespec)
 
     const qolDesc = qolGetDesc(qolTotal), qolCost = qolGetCost(qolTotal);
 
@@ -228,11 +251,11 @@ function update() {
     changeElement("qolTitle", `QOL Upgrade #${qolTotal+1}`);
     changeElement("qolCost", `Cost: ${format(new Decimal(qolCost))} prestige tokens`)
     
-    let qolPrev;
+    let qolPrev = "";
     if (qolTotal <= 0) {
         qolPrev = "Nothing";
     } else {
-        for (let i=0; i<qolTotal-1; i++) { qolPrev += `${qolGetPrev(i)}\n`; }
+        for (let i=0; i<qolTotal; i++) { qolPrev += `${i+1}: ${qolGetDesc(i)}<br>`; }
     }
 
     changeElement("qolPrev", qolPrev)
