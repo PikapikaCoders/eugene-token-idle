@@ -45,10 +45,3 @@ function format(decimal) {
     }
     return output
 }
-
-/**
- * Does a log using the ln(num)/ln(base) method. Never returns NaN.
- */
-function lnLog(decimal, base) {
-    return Decimal.ln(decimal).div(Decimal.ln(base))
-}

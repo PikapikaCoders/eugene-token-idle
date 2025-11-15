@@ -96,7 +96,7 @@ function upgradeBuy(property, amount) {
     else { costMult = 1.65; }
 
     let max = amount;
-    if (amount == 0) max = 10000;
+    if (amount == 0) { max = 10000; }
 
     for (let i=0; i<max; i++) {
         let cost = Decimal.pow(costMult, player.ups._total).times(3);
@@ -129,8 +129,9 @@ function upgradeRespec(property, amount) {
 }
 
 function getPrestigeGain(money) {
-    let gain = Decimal.max(money.sub(100), 0).div(30).pow(Decimal.ln(2));
+    let gain = Decimal.ln(Decimal.max(money.sub(100), 0).div(30));
 
+    if (isNaN(gain) || gain.lte(0)) { return new Decimal(0) };
     return gain;
 }
 
@@ -142,6 +143,8 @@ function prestige(gaining = true) {
         player.prestigeTkn = player.prestigeTkn.add(player.prestigeTknGain);
         player.prestigeTknBest = Decimal.max(player.prestigeTknBest, player.prestigeTkn);
     }
+
+    const lastMoney = player.money;
 
     player.tokens = new Decimal(0);
     player.money = new Decimal(10);
@@ -156,12 +159,15 @@ function prestige(gaining = true) {
     player.ups.accelCost = [];
     player.ups.speedCost = [];
     player.ups.transCost = [];
+
+    if (player.qolTotal >= 3) { player.money = player.money.add(lastMoney.pow(0.2)); }
 }
 
 function qolGetCost(total) {
     switch (total) {
-        case 0: cost = 3; break;
-        case 1: cost = 100; break;
+        case 0: cost = 1.5; break;
+        case 1: cost = 6; break;
+        case 2: cost = 30; break;
         default: cost = new Decimal("eeeee100"); break;
     }
 
@@ -172,6 +178,7 @@ function qolGetDesc(total) {
     switch (total) {
         case 0: desc = "Can buy / respec while scamming."; break;
         case 1: desc = "See more stats."; break;
+        case 2: desc = "Start with the amount of money when you last prestige raised to the 1/5th power more money."; break;
         default: desc = "Maxed Out"; break;
     }
 
@@ -204,18 +211,21 @@ function update() {
     else { autosave = "Off" }
     changeElement("autosave", `Autosave: ${autosave}`);
 
-    changeElement("accelupamount", `Bought: ${player.ups.accel}`);
+    const qolTotal = player.ups.qolTotal
+    let vel = "";
+    if (qolTotal >= 2) { vel = `<br><span style="font-size: 13px;">(Velocity: ${format(player.vel)})</span>`; }
+
+    changeElement("accelupamount", `Bought: ${player.ups.accel}${vel}`);
     changeElement("speedupamount", `Bought: ${player.ups.speed}`);
     changeElement("transupamount", `Bought: ${player.ups.trans}`);
 
-    const costCheap = Decimal.pow(1.5, player.ups._total).times(3);
-    const costLessCheap = Decimal.pow(1.65, player.ups._total).times(3);
+    const upsTotal = player.ups._total;
+    const costCheap = Decimal.pow(1.5, upsTotal).times(3), costLessCheap = Decimal.pow(1.65, upsTotal).times(3);
 
     changeElement("accelCost", `Cost: ${format(costCheap)} money`);
     changeElement("speedCost", `Cost: ${format(costCheap)} money`);
     changeElement("transCost", `Cost: ${format(costLessCheap)} money`);
 
-    const qolTotal = player.ups.qolTotal
     let moneyOnStop = "";
     if (qolTotal >= 2) { moneyOnStop = ` (+${format(getScamMoney(player.tokens))})` }
 
@@ -241,7 +251,7 @@ function update() {
     changeElement("prestigeGain", `Prestige to gain ${format(player.prestigeTknGain)} prestige tokens.`);
 
     let prestigeGainRespec = "";
-    if (qolTotal >= 2) { prestigeGainRespec = `(+${getPrestigeGain(player.moneyTotal)} prestige tokens on respec all upgrades)`; }
+    if (qolTotal >= 2) { prestigeGainRespec = `(+${format(getPrestigeGain(player.moneyTotal))} prestige tokens on respec all upgrades)`; }
 
     changeElement("prestigeGainRespec", prestigeGainRespec)
 
@@ -252,9 +262,8 @@ function update() {
     changeElement("qolCost", `Cost: ${format(new Decimal(qolCost))} prestige tokens`)
     
     let qolPrev = "";
-    if (qolTotal <= 0) {
-        qolPrev = "Nothing";
-    } else {
+    if (qolTotal <= 0) { qolPrev = "Nothing"; } 
+    else {
         for (let i=0; i<qolTotal; i++) { qolPrev += `${i+1}: ${qolGetDesc(i)}<br>`; }
     }
 
