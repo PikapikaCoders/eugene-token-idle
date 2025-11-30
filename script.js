@@ -318,7 +318,7 @@ function update() {
 
     changeElement("qolPrev", qolPrev);
 
-    changeElement("essence", `Generates Eugene Essence (${format(player.essence)} essence)`);
+    changeElement("essence", `Generates Eugene Essence (${format(player.essence)})`);
     changeElement("spiritAmount", `Bought: ${player.spirits}`);
     changeElement("spiritCost", `Cost: ${format(spiritGetCost(player.spirits))} prestige tokens`);
 
