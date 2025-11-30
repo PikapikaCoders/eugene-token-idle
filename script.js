@@ -328,7 +328,9 @@ function update() {
 function tipsGetReq(total) {
     let req = "eeeee100";
     switch (total) {
-        case 0: req = "100"; break;
+        case 0: req = "15"; break;
+        case 1: req = "100"; break;
+        case 2: req = "e3"; break;
     }
 
     return new Decimal(req);
@@ -337,7 +339,9 @@ function tipsGetReq(total) {
 function tipsGetDesc(total) {
     let desc = "";
     switch (total) {
-        case 0: desc = "Buying in a specific order costs less money!"; break;
+        case 0: desc = "Respec often"; break;
+        case 1: desc = "Buying order matters"; break;
+        case 2: desc = "Accel -> Speed -> Trans"; break;
     }
 
     return desc;
@@ -347,13 +351,13 @@ function tipsUpdate() {
     const tips = player.tips;
     let req = tipsGetReq(tips);
 
-    while (player.money.gte(req)) {
+    if (player.money.gte(req)) {
         req = tipsGetReq(tips);
-        tips++;
+        player.tips++;
     }
     
     let desc = "";
-    for (let i=0; i<tips; i++) { desc += `${i+1}: ${qolGetDesc(i)}<br>`; }
+    for (let i=0; i<tips; i++) { desc += `${i+1}: ${tipsGetDesc(i)}<br>`; }
 
     changeElement("tipsUnlock", `Next tip at: ${format(req)} money`);
     changeElement("tips", desc);
