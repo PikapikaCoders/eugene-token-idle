@@ -6,6 +6,7 @@ function utilsSave() {
 const decimalArr = [
     "tokens", "money", "vel", "moneyTotal",
     "prestige", "prestigeTkn", "prestigeTknGain", "prestigeTknBest",
+    "spirits", "essence",
 ]
 
 const nestedDecimalArr = [
@@ -13,19 +14,21 @@ const nestedDecimalArr = [
 ]
 
 function utilsLoad(json) {
-    if (json === null) { setDefaultPlayer(); return; } 
+    setDefaultPlayer();
+
+    if (json === null) { return; } 
     temp = JSON.parse(json);
     if (temp.autosave) { setInterval(utilsSave, 1000); }
 
-    for (const s of decimalArr) { temp[s] = new Decimal(temp[s]) }
+    for (const str of decimalArr) { temp[str] = new Decimal(temp[str]) }
 
-    for (const a of nestedDecimalArr) {
-        for (const s of a[1]) { temp[a[0]][s] = new Decimal(temp[a[0]][s]) }
+    for (const arr of nestedDecimalArr) {
+        for (const str of arr[1]) { temp[arr[0]][str] = new Decimal(temp[arr[0]][str]) }
     }
 
     if (temp.autosave) { utilsLoadInterval = setInterval(utilsSave, 1000); }
 
-    player = temp;
+    Object.assign(player, temp);
 }
 
 function utilsAutosave() {

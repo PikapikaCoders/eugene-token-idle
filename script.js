@@ -4,18 +4,20 @@ function setDefaultPlayer() {
     player = {
         tokens: new Decimal(0),
         money: new Decimal(10),
-        vel: new Decimal(0),
-
         moneyTotal: new Decimal(0),
+        vel: new Decimal(0),
+        
+        scamming: false,
+        scamTimeouted: false,
+        scamTimeout: 5000,
 
         prestige: new Decimal(0),
         prestigeTkn: new Decimal(0),
         prestigeTknGain: new Decimal(0),
         prestigeTKnBest: new Decimal(0),
-        
-        scamming: false,
-        scamTimeouted: false,
-        scamTimeout: 5000,
+
+        spirits: new Decimal(0),
+        essence: new Decimal(0),
         ups: {
             _total: new Decimal(0),
 
@@ -31,9 +33,11 @@ function setDefaultPlayer() {
         },
 
         autosave: true,
+        tips: 0,
     }
 }
 
+setDefaultPlayer();
 
 function getOut() {
     addClass("getOutDiv", "hide");
@@ -80,8 +84,10 @@ function scam() {
             gain = gain.times(Decimal.pow(1.4, player.ups.speed).div(20));
         }
 
-        player.vel = player.vel.add(Decimal.pow(1.04, player.ups.accel).sub(1))
-        gain = gain.times(player.vel.add(1))
+        velUpdate();
+        essenceUpdate();
+        gain = gain.times(player.vel.add(1));
+        gain = gain.times(player.essence.div(timeout).add(1));
         
         player.tokens = player.tokens.add(gain);
         scamTimeoutID = setTimeout(scamTimeoutFunc, timeout);
@@ -128,6 +134,13 @@ function upgradeRespec(property, amount) {
     }
 }
 
+function velUpdate() {
+    const upgrade = player.ups.accel;
+    let gain = Decimal.pow(1.04, upgrade).sub(1);
+
+    player.vel = player.vel.add(gain);
+}
+
 function getPrestigeGain(money) {
     let gain = Decimal.ln(Decimal.max(money.sub(100), 0).div(30));
 
@@ -150,6 +163,7 @@ function prestige(gaining = true) {
     player.money = new Decimal(10);
     player.moneyTotal = new Decimal(10);
     player.vel = new Decimal(0);
+    player.essence = new Decimal(0);
     player.scamming = false;
     player.scamTimeouted = false;
     player.ups._total = new Decimal(0);
@@ -164,32 +178,32 @@ function prestige(gaining = true) {
 }
 
 function qolGetCost(total) {
+    let cost = "eeeee100";
     switch (total) {
-        case 0: cost = 1.5; break;
-        case 1: cost = 6; break;
-        case 2: cost = 30; break;
-        default: cost = new Decimal("eeeee100"); break;
+        case 0: cost = "1.5"; break;
+        case 1: cost = "6"; break;
+        case 2: cost = "30"; break;
     }
 
-    return cost;
+    return new Decimal(cost);
 }
 
 function qolGetDesc(total) {
+    let desc = "Maxed Out";
     switch (total) {
         case 0: desc = "Can buy / respec while scamming."; break;
         case 1: desc = "See more stats."; break;
         case 2: desc = "Start with the amount of money when you last prestige raised to the 1/5th power more money."; break;
-        default: desc = "Maxed Out"; break;
     }
 
     return desc;
 }
 
 function qolBuy(type="buy") {
-    let cost, qolTotal = player.ups.qolTotal;
+    let qolTotal = player.ups.qolTotal;
     if (type == "respec") { qolTotal -= 1; }
 
-    cost = qolGetCost(qolTotal);
+    const cost = qolGetCost(qolTotal);
 
     if (type == "buy") {
         if (player.prestigeTkn.gte(cost)) {
@@ -202,6 +216,38 @@ function qolBuy(type="buy") {
             player.ups.qolTotal -= 1;
         }
     }
+}
+
+function spiritGetCost(spirit) {
+    let cost = Decimal.pow(3, spirit).times(10);
+    
+    return cost;
+}
+
+function spiritBuy(type="buy") {
+    let spirit = player.spirits;
+    if (type == "respec") { spirit = spirit.sub(1); }
+
+    const cost = spiritGetCost()
+
+    if (type == "buy") {
+        if (player.prestigeTkn.gte(cost)) {
+            player.prestigeTkn = player.prestigeTkn.sub(cost);
+            player.spirits = spirit.add(1);
+        }
+    } else {
+        if (spirit.gte(0)) {
+            player.prestigeTkn = player.prestigeTkn.add(cost);
+            player.spirits = spirit;
+        }
+    }
+}
+
+function essenceUpdate() {
+    const spirit = player.spirits, essence = player.essence;
+    let gain = Decimal.pow(2, spirit).sub(1).div(Decimal.max(essence, 1));
+
+    player.essence = player.essence.add(gain);
 }
 
 setInterval(update, 1);
@@ -253,13 +299,13 @@ function update() {
     let prestigeGainRespec = "";
     if (qolTotal >= 2) { prestigeGainRespec = `(+${format(getPrestigeGain(player.moneyTotal))} prestige tokens on respec all upgrades)`; }
 
-    changeElement("prestigeGainRespec", prestigeGainRespec)
+    changeElement("prestigeGainRespec", prestigeGainRespec);
 
     const qolDesc = qolGetDesc(qolTotal), qolCost = qolGetCost(qolTotal);
 
     changeElement("qolDesc", qolDesc);
     changeElement("qolTitle", `QOL Upgrade #${qolTotal+1}`);
-    changeElement("qolCost", `Cost: ${format(new Decimal(qolCost))} prestige tokens`)
+    changeElement("qolCost", `Cost: ${format(new Decimal(qolCost))} prestige tokens`);
     
     let qolPrev = "";
     if (qolTotal <= 0) { qolPrev = "Nothing"; } 
@@ -267,5 +313,45 @@ function update() {
         for (let i=0; i<qolTotal; i++) { qolPrev += `${i+1}: ${qolGetDesc(i)}<br>`; }
     }
 
-    changeElement("qolPrev", qolPrev)
+    changeElement("qolPrev", qolPrev);
+
+    changeElement("essence", `Generates Eugene Essence (${format(player.essence)} essence)`);
+    changeElement("spiritAmount", `Bought: ${player.spirits}`);
+    changeElement("spiritCost", `Cost: ${format(spiritGetCost(player.spirits))} prestige tokens`);
+
+    tipsUpdate();
+}
+
+function tipsGetReq(total) {
+    let req = "eeeee100";
+    switch (total) {
+        case 0: req = "100"; break;
+    }
+
+    return new Decimal(req);
+}
+
+function tipsGetDesc(total) {
+    let desc = "";
+    switch (total) {
+        case 0: desc = "Buying in a specific order costs less money!"; break;
+    }
+
+    return desc;
+}
+
+function tipsUpdate() {
+    const tips = player.tips;
+    let req = tipsGetReq(tips);
+
+    while (player.money.gte(req)) {
+        req = tipsGetReq(tips);
+        tips++;
+    }
+    
+    let desc = "";
+    for (let i=0; i<tips; i++) { desc += `${i+1}: ${qolGetDesc(i)}<br>`; }
+
+    changeElement("tipsUnlock", `Next tip at: ${format(req)} money`);
+    changeElement("tips", desc);
 }
