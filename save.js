@@ -29,6 +29,8 @@ function utilsLoad(json) {
     if (temp.autosave) { utilsLoadInterval = setInterval(utilsSave, 1000); }
 
     Object.assign(player, temp);
+
+    if (player.scamming) { scam(true) }
 }
 
 function utilsAutosave() {

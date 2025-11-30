@@ -51,11 +51,33 @@ function getScamMoney(token) {
     return gain;
 }
 
+function scamTimeoutFunc() {
+    let timeout = Decimal.div(1e3, Decimal.pow(1.4, player.ups.speed));
+
+    let gain = new Decimal(1);
+
+    if (timeout.lt(50)) {
+        timeout = new Decimal(50);
+        gain = gain.times(Decimal.pow(1.4, player.ups.speed).div(20));
+    }
+
+    velUpdate();
+    essenceUpdate();
+    gain = gain.times(player.vel.add(1));
+    gain = gain.times(player.essence.div(timeout).add(1));
+    
+    player.tokens = player.tokens.add(gain);
+    scamTimeoutID = setTimeout(scamTimeoutFunc, timeout);
+}
+
 var scamTimeoutID;
-function scam() {
+function scam(inverse=false) {
     if (player.scamTimeouted) { return; }
 
-    if (!player.scamming) {
+    let scamming = player.scamming;
+    if (inverse) { scamming = !scamming; }
+
+    if (!scamming) {
         player.scamming = true;
 
         let timeout = Decimal.div(1e3, Decimal.pow(1.4, player.ups.speed));
@@ -72,25 +94,6 @@ function scam() {
         player.moneyTotal = player.moneyTotal.add(gain);
         player.scamTimeouted = true;
         setTimeout(() => { player.scamTimeouted = false; }, player.scamTimeout);
-    }
-
-    function scamTimeoutFunc() {
-        let timeout = Decimal.div(1e3, Decimal.pow(1.4, player.ups.speed));
-
-        let gain = new Decimal(1);
-
-        if (timeout.lt(50)) {
-            timeout = new Decimal(50);
-            gain = gain.times(Decimal.pow(1.4, player.ups.speed).div(20));
-        }
-
-        velUpdate();
-        essenceUpdate();
-        gain = gain.times(player.vel.add(1));
-        gain = gain.times(player.essence.div(timeout).add(1));
-        
-        player.tokens = player.tokens.add(gain);
-        scamTimeoutID = setTimeout(scamTimeoutFunc, timeout);
     }
 }
 
