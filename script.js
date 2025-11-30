@@ -248,7 +248,7 @@ function spiritBuy(type="buy") {
 
 function essenceUpdate(timeout) {
     const spirit = player.spirits, essence = player.essence;
-    let gain = Decimal.pow(2, spirit).sub(1).div(Decimal.max(essence, 1)).div(timeout);
+    let gain = Decimal.pow(2, spirit).sub(1).div(Decimal.max(essence, 1)).div(Decimal.div(1000, timeout));
 
     player.essence = player.essence.add(gain);
 }
