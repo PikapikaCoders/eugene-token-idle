@@ -62,9 +62,9 @@ function scamTimeoutFunc() {
     }
 
     velUpdate();
-    essenceUpdate();
+    essenceUpdate(timeout);
     gain = gain.times(player.vel.add(1));
-    gain = gain.times(player.essence.div(timeout).add(1));
+    gain = gain.times(player.essence.add(1));
     
     player.tokens = player.tokens.add(gain);
     scamTimeoutID = setTimeout(scamTimeoutFunc, timeout);
@@ -246,9 +246,9 @@ function spiritBuy(type="buy") {
     }
 }
 
-function essenceUpdate() {
+function essenceUpdate(timeout) {
     const spirit = player.spirits, essence = player.essence;
-    let gain = Decimal.pow(2, spirit).sub(1).div(Decimal.max(essence, 1));
+    let gain = Decimal.pow(2, spirit).sub(1).div(Decimal.max(essence, 1)).div(timeout);
 
     player.essence = player.essence.add(gain);
 }
