@@ -33,6 +33,11 @@ function checkClass(id, name) {
     document.getElementById(id).classList.contains(name)
 }
 
+function noneIfEmpty(str) {
+    if (!str) { str = "none" }
+    return str;
+}
+
 /**
  * Format Decimal with EternalNotations
  */

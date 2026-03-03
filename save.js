@@ -10,7 +10,7 @@ const decimalArr = [
 ]
 
 const nestedDecimalArr = [
-    ["ups", ["_total", "accel", "speed", "trans"]],
+    ["ups", ["_total", "_extra", "_extraRate", "accel", "speed", "trans"]],
 ]
 
 function utilsLoad(json) {
@@ -30,7 +30,7 @@ function utilsLoad(json) {
 
     Object.assign(player, temp);
 
-    if (player.scamming) { scam(true) }
+    if (player.scamming) { scam(true); }
 }
 
 function utilsAutosave() {

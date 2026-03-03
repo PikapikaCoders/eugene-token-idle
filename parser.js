@@ -130,11 +130,8 @@ function exprEvalRPN(stack) {
 
 function exprEval(expr) {
     const stack = exprTokenize(expr);
-    console.log(stack);
     const rpn = exprToRPN(stack);
-    console.log(rpn);
     const output = exprEvalRPN(rpn);
-    console.log(output);
 
     return output;
 }

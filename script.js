@@ -20,6 +20,8 @@ function setDefaultPlayer() {
         essence: new Decimal(0),
         ups: {
             _total: new Decimal(0),
+            _extra: new Decimal(0),
+            _extraRate: new Decimal(0.1),
 
             accel: new Decimal(0),
             speed: new Decimal(0),
@@ -34,7 +36,7 @@ function setDefaultPlayer() {
 
         autosave: true,
         tips: 0,
-    }
+    };
 }
 
 setDefaultPlayer();
@@ -80,7 +82,7 @@ function scam(inverse=false) {
     if (!scamming) {
         player.scamming = true;
 
-        let timeout = Decimal.div(1e3, Decimal.pow(1.4, player.ups.speed));
+        let timeout = Decimal.div(1e3, Decimal.pow(1.4, player.ups.speed.add(player.ups._extra)));
 
         scamTimeoutID = setTimeout(scamTimeoutFunc, Decimal.max(timeout, 50))
     } else {
@@ -137,8 +139,47 @@ function upgradeRespec(property, amount) {
     }
 }
 
+function extraUpgrades() {
+    if (player.ups.qolTotal >= 3) {
+        const max = Decimal.max(player.ups.accel, player.ups.speed);
+        const extra = max.times(player.ups._extraRate);
+
+        player.ups._extra = extra;
+    }
+}
+
+function extraRateBuy(type="buy") {
+    const rate = player.ups._extraRate
+    let amt = extraRateGetAmount(rate);
+    if (type == "respec") { amt = amt.sub(1); }
+
+    const cost = extraRateGetCost(amt);
+
+    if (type == "buy") {
+        if (player.prestigeTkn.gte(cost)) {
+            player.prestigeTkn = player.prestigeTkn.sub(cost);
+            player.ups._extraRate = rate.add(0.1)
+        }
+    } else {
+        if (rate.gte(0.2)) {
+            player.prestigeTkn = player.prestigeTkn.add(cost);
+            player.ups._extraRate = rate.sub(0.1)
+        }
+    }
+}
+
+function extraRateGetAmount(rate) {
+    return Decimal.times(rate, 10).sub(1);
+}
+
+function extraRateGetCost(amt) {
+    let cost = Decimal.pow(5, amt).times(50);
+
+    return cost;
+}
+
 function velUpdate() {
-    const upgrade = player.ups.accel;
+    const upgrade = player.ups.accel.add(player.ups._extra);
     let gain = Decimal.pow(1.04, upgrade).sub(1);
 
     player.vel = player.vel.add(gain);
@@ -196,7 +237,7 @@ function qolGetDesc(total) {
     switch (total) {
         case 0: desc = "Can buy / respec while scamming."; break;
         case 1: desc = "See more stats."; break;
-        case 2: desc = "Start with the amount of money when you last prestige raised to the 1/5th power more money."; break;
+        case 2: desc = "Unlock extra upgrades."; break;
     }
 
     return desc;
@@ -231,7 +272,7 @@ function spiritBuy(type="buy") {
     let spirit = player.spirits;
     if (type == "respec") { spirit = spirit.sub(1); }
 
-    const cost = spiritGetCost()
+    const cost = spiritGetCost(spirits)
 
     if (type == "buy") {
         if (player.prestigeTkn.gte(cost)) {
@@ -264,8 +305,13 @@ function update() {
     let vel = "";
     if (qolTotal >= 2) { vel = `<br><span style="font-size: 13px;">(Velocity: ${format(player.vel)})</span>`; }
 
-    changeElement("accelupamount", `Bought: ${player.ups.accel}${vel}`);
-    changeElement("speedupamount", `Bought: ${player.ups.speed}`);
+    let extraUps = player.ups._extra;
+
+    let extraDesc = "";
+    if (!extraUps.eq(0)) { extraDesc = ` (+${format(extraUps)})`}
+
+    changeElement("accelupamount", `Bought: ${player.ups.accel}${extraDesc}${vel}`);
+    changeElement("speedupamount", `Bought: ${player.ups.speed}${extraDesc}`);
     changeElement("transupamount", `Bought: ${player.ups.trans}`);
 
     const upsTotal = player.ups._total;
@@ -294,6 +340,14 @@ function update() {
     changeElement("speedDesc", desc[1]);
     changeElement("transDesc", desc[2]);
 
+    const rate = player.ups._extraRate;
+    const rateAmt = extraRateGetAmount(rate)
+
+    changeElement("extraUps", `You have ${format(player.ups._extra)} extra accel and speed upgrades.`);
+    changeElement("extraRate", `(Set extra upgrade count to <b>${format(rate)}</b>x max of current accel and speed upgrades.)`);
+    changeElement("extraAmount", `Bought: ${rateAmt}`);
+    changeElement("extraCost", `Cost: ${extraRateGetCost(rateAmt)} prestige tokens`);
+
     player.prestigeTknGain = getPrestigeGain(player.money);
 
     changeElement("prestigeAmount", `You have ${format(player.prestigeTkn)} prestige tokens.`);
@@ -321,6 +375,11 @@ function update() {
     changeElement("essence", `Generates Eugene Essence (${format(player.essence)})`);
     changeElement("spiritAmount", `Bought: ${player.spirits}`);
     changeElement("spiritCost", `Cost: ${format(spiritGetCost(player.spirits))} prestige tokens`);
+
+    changeElement("autoButton1", `Current Mode: ${noneIfEmpty(player.ups.auto)}`);
+
+    if (player.ups.qolTotal >= 3) { removeClass("extraDetails", "hide"); }
+    else if (!checkClass("extraDetails", "hide")) { addClass("extraDetails", "hide"); }
 
     tipsUpdate();
 }

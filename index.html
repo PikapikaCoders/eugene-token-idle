@@ -25,6 +25,7 @@
             <li data-tab-target="#options" class="tab" style="background-color:#faffce">Options</li>
             <li data-tab-target="#main" class="active tab" style="background-color:#eaff31">Main</li>
             <li data-tab-target="#prestige" class="tab" style="background-color:#f831ff">Prestige</li>
+            <li data-tab-target="#auto" class="hide tab" id="autoTab" style="background-color:#ff9838">Auto</li>
         </ul>
 
         <h2 id="amount" style="text-align: center">You have 0 eugene tokens & 0 money</h2>
@@ -52,6 +53,7 @@
 
         <div id="main" data-tab-content class="active">
             <button id="scam" class="button1" onclick="scam()">SCAM (Scamming: false | Cooldown: false)</button>
+            <p style="font-size: 13px; margin-top: 0px;">(Press to start scamming, press again to stop scamming.)</p>
 
             <div class="flex" style="justify-content: center;">
                 <div class="card">
@@ -112,6 +114,25 @@
                     </div>
                 </div>
             </div>
+
+            <details id="extraDetails" class="hide" style="background-color:#cae96e; border:3px solid #83aa45;">
+                <summary style="font-family: Monospace; font-size: 18px;">[Extra Upgrades]</summary>
+                <h3 id="extraUps" style="margin-bottom: 0px;">You have 0 extra accel and speed upgrades.</h3>
+                <button class="button1 yellow" onclick="extraUpgrades()">UPDATE EXTRA UPGRADEDS</button>
+                <p id="extraRate" style="font-size: 13px; margin-top: 0px;">(Set extra upgrade count to <b>0.1</b>x max of current accel and speed upgrades.)</p>
+                <div class="flex" style="justify-content: center;">
+                    <div class="card" style="background-color:#f0fa66; width: 350px;">
+                        <h3>Extra Upgrade Rate</h3>
+                        <p>Increase rate of extra upgrade</p>
+                        <p id="extraAmount"></p>
+                        <p id="extraCost"></p>
+                        <div class="flex">
+                            <button class="button1 yellow" style="margin-right:10px" onclick="extraRateBuy()">Buy</button>
+                            <button class="button1 yellow" style="margin-right:10px" onclick="extraRateBuy('respec')">Respec</button>
+                        </div>
+                    </div>
+                </div>
+            </details>
         </div>
 
         <div id="prestige" data-tab-content>
@@ -162,6 +183,13 @@
                 </div>
             </details>
             
+        </div>
+
+        <div id="auto" data-tab-content>
+            <div class="flex bar">
+                <h4 style="margin: 0px;">Auto Accel / Speed</h4>
+                <button id="autoButton1" class="button1" style="margin: 0px; background-color:#ff9838">Current Mode: none</button>
+            </div>
         </div>
     </div>
     
