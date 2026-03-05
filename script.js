@@ -272,7 +272,7 @@ function spiritBuy(type="buy") {
     let spirit = player.spirits;
     if (type == "respec") { spirit = spirit.sub(1); }
 
-    const cost = spiritGetCost(spirits)
+    const cost = spiritGetCost(spirit)
 
     if (type == "buy") {
         if (player.prestigeTkn.gte(cost)) {
