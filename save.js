@@ -30,6 +30,8 @@ function utilsLoad(json) {
 
     Object.assign(player, temp);
 
+    if (player.ups._extraRate.eq(0)) { player.ups._extraRate = new Decimal(0.1); }
+
     if (player.scamming) { scam(true); }
 }
 
