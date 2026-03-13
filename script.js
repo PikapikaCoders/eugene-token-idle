@@ -72,6 +72,8 @@ function scamTimeoutFunc() {
     scamTimeoutID = setTimeout(scamTimeoutFunc, timeout);
 }
 
+//there's a bug here somewhere someone fix it pls im lazy
+
 var scamTimeoutID;
 function scam(inverse=false) {
     if (player.scamTimeouted) { return; }
